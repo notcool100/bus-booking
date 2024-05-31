@@ -1,0 +1,54 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  name: 'Anjal'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  publishPath: '$(build.artifactStagingDirectory)\WebApp'
+  ftpServerUrl: 'ftp://ftp.yourinfinityfreeserver.com'  # Replace with your FTP server URL
+  ftpUsername: 'your-ftp-username'  # Replace with your FTP username
+  ftpPassword: '$(ftpPassword)'  # Store your FTP password securely in pipeline secrets
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(solution)'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-o $(publishPath)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(publishPath)'
+    ArtifactName: 'PublishFiles'
+    publishLocation: 'Container'
+
+- task: FtpUpload@2  # Using the FTP Upload task
+  inputs:
+    credentialsOption: 'inputs'
+    serverUrl: '$(ftpServerUrl)'
+    username: '$(ftpUsername)'
+    password: '$(ftpPassword)'
+    rootDirectory: '$(publishPath)'
+    filePatterns: '**/*'
+    remoteDirectory: '/'  # Adjust if you need to upload to a specific directory
+    clean: true  # Clean the remote directory before uploading
+    trustSSL: true
