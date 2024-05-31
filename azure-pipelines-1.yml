@@ -14,10 +14,6 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   publishPath: '$(build.artifactStagingDirectory)\WebApp'
-  ftpServerUrl: 'ftp://ftpupload.net'  # Replace with your FTP server URL
-  
-  ftpUsername: 'if0_36649508'  # Replace with your FTP username
-  ftpPassword: '$(INyWQTCUP87l6)'  # Store your FTP password securely in pipeline secrets
 
 steps:
 - task: NuGetToolInstaller@1
@@ -41,15 +37,4 @@ steps:
     PathtoPublish: '$(publishPath)'
     ArtifactName: 'PublishFiles'
     publishLocation: 'Container'
-
-- task: FtpUpload@2  # Using the FTP Upload task
-  inputs:
-    credentialsOption: 'inputs'
-    serverUrl: '$(ftpServerUrl)'
-    username: '$(ftpUsername)'
-    password: '$(ftpPassword)'
-    rootDirectory: '$(publishPath)'
-    filePatterns: '**/*'
-    remoteDirectory: '/'  # Adjust if you need to upload to a specific directory
-    clean: true  # Clean the remote directory before uploading
-    trustSSL: true
+    
