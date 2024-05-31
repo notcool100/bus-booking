@@ -14,7 +14,8 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   publishPath: '$(build.artifactStagingDirectory)\WebApp'
-  ftpServerUrl: 'ftpupload.net'  # Replace with your FTP server URL
+  ftpServerUrl: 'ftp://ftpupload.net'  # Replace with your FTP server URL
+  
   ftpUsername: 'if0_36649508'  # Replace with your FTP username
   ftpPassword: '$(INyWQTCUP87l6)'  # Store your FTP password securely in pipeline secrets
 
